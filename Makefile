@@ -1,7 +1,9 @@
 TEST?=$$(go list ./... | grep -v /vendor/)
 VETARGS?=-asmdecl -atomic -bool -buildtags -copylocks -methods -nilfunc -printf -rangeloops -shift -structtags -unsafeptr
+# autonubil: added github.com/go-chef/chef
 EXTERNAL_TOOLS=\
-	github.com/mitchellh/gox
+	github.com/mitchellh/gox \
+	github.com/go-chef/chef
 BUILD_TAGS?=vault
 
 default: dev 

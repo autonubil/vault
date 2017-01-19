@@ -14,6 +14,8 @@ import (
 	credGitHub "github.com/hashicorp/vault/builtin/credential/github"
 	credLdap "github.com/hashicorp/vault/builtin/credential/ldap"
 	credUserpass "github.com/hashicorp/vault/builtin/credential/userpass"
+	// autonubil Chef Authentication
+	credChef "github.com/autonubilsystemgmbh/vault-chef/credential/chef"
 
 	"github.com/hashicorp/vault/builtin/logical/aws"
 	"github.com/hashicorp/vault/builtin/logical/cassandra"
@@ -72,6 +74,8 @@ func Commands(metaPtr *meta.Meta) map[string]cli.CommandFactory {
 					"github":   credGitHub.Factory,
 					"userpass": credUserpass.Factory,
 					"ldap":     credLdap.Factory,
+					// autonubil Chef Authentication
+					"chef": credChef.Factory,
 				},
 				LogicalBackends: map[string]logical.Factory{
 					"aws":        aws.Factory,
@@ -111,6 +115,8 @@ func Commands(metaPtr *meta.Meta) map[string]cli.CommandFactory {
 					"userpass": &credUserpass.CLIHandler{},
 					"ldap":     &credLdap.CLIHandler{},
 					"cert":     &credCert.CLIHandler{},
+					// autonubil Chef Authentication
+					"chef": &credChef.CLIHandler{},
 				},
 			}, nil
 		},
