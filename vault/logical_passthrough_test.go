@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/logical"
 )
 
 func TestPassthroughBackend_RootPaths(t *testing.T) {

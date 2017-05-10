@@ -6,9 +6,9 @@ import (
 
 	log "github.com/mgutz/logxi/v1"
 
-	"github.com/hashicorp/vault/helper/logformat"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/physical"
+	"github.com/autonubil/vault/helper/logformat"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/physical"
 )
 
 func TestCore_Init(t *testing.T) {

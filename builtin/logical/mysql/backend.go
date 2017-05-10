@@ -7,8 +7,8 @@ import (
 	"sync"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 func Factory(conf *logical.BackendConfig) (logical.Backend, error) {
@@ -31,6 +31,10 @@ func Backend() *backend {
 		Secrets: []*framework.Secret{
 			secretCreds(&b),
 		},
+
+		Invalidate: b.invalidate,
+
+		Clean: b.ResetDB,
 	}
 
 	return &b
@@ -101,6 +105,13 @@ func (b *backend) ResetDB() {
 	}
 
 	b.db = nil
+}
+
+func (b *backend) invalidate(key string) {
+	switch key {
+	case "config/connection":
+		b.ResetDB()
+	}
 }
 
 // Lease returns the lease information

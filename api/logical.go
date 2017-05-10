@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/hashicorp/vault/helper/jsonutil"
+	"github.com/autonubil/vault/helper/jsonutil"
 )
 
 const (

@@ -6,8 +6,8 @@ import (
 
 	"github.com/duosecurity/duo_api_golang"
 	"github.com/duosecurity/duo_api_golang/authapi"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 type AuthClient interface {

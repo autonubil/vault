@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/hashicorp/vault/helper/logformat"
+	"github.com/autonubil/vault/helper/logformat"
 	log "github.com/mgutz/logxi/v1"
 
 	_ "github.com/go-sql-driver/mysql"

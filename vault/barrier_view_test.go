@@ -5,7 +5,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/logical"
 )
 
 func TestBarrierView_impl(t *testing.T) {

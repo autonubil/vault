@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/hashicorp/vault/audit"
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/audit"
+	"github.com/autonubil/vault/logical"
 )
 
 func Factory(conf *audit.BackendConfig) (audit.Backend, error) {
@@ -76,14 +76,18 @@ func Factory(conf *audit.BackendConfig) (audit.Backend, error) {
 
 	switch format {
 	case "json":
-		b.formatter.AuditFormatWriter = &audit.JSONFormatWriter{}
+		b.formatter.AuditFormatWriter = &audit.JSONFormatWriter{
+			Prefix: conf.Config["prefix"],
+		}
 	case "jsonx":
-		b.formatter.AuditFormatWriter = &audit.JSONxFormatWriter{}
+		b.formatter.AuditFormatWriter = &audit.JSONxFormatWriter{
+			Prefix: conf.Config["prefix"],
+		}
 	}
 
 	// Ensure that the file can be successfully opened for writing;
 	// otherwise it will be too late to catch later without problems
-	// (ref: https://github.com/hashicorp/vault/issues/550)
+	// (ref: https://github.com/autonubil/vault/issues/550)
 	if err := b.open(); err != nil {
 		return nil, fmt.Errorf("sanity check failed; unable to open %s for writing: %v", path, err)
 	}
@@ -153,10 +157,15 @@ func (b *Backend) open() error {
 		return err
 	}
 
-	// Change the file mode in case the log file already existed
-	err = os.Chmod(b.path, b.mode)
-	if err != nil {
-		return err
+	// Change the file mode in case the log file already existed. We special
+	// case /dev/null since we can't chmod it
+	switch b.path {
+	case "/dev/null":
+	default:
+		err = os.Chmod(b.path, b.mode)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

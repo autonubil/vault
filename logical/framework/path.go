@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/logical"
 )
 
 // Helper which returns a generic regex string for creating endpoint patterns

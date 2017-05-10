@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/hashicorp/go-uuid"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 type sshOTP struct {
@@ -207,6 +207,8 @@ func (b *backend) GenerateSaltedOTP() (string, string, error) {
 	if err != nil {
 		return "", "", err
 	}
+	b.saltMutex.RLock()
+	defer b.saltMutex.RUnlock()
 	return str, b.salt.SaltID(str), nil
 }
 

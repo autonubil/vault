@@ -3,8 +3,8 @@ package cassandra
 import (
 	"fmt"
 
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 // SecretCredsType is the type of creds issued from this backend

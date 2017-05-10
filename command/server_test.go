@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/vault/meta"
+	"github.com/autonubil/vault/meta"
 	"github.com/mitchellh/cli"
 )
 

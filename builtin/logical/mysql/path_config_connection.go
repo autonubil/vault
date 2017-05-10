@@ -6,8 +6,8 @@ import (
 
 	"github.com/fatih/structs"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 func pathConfigConnection(b *backend) *framework.Path {

@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/logical"
 )
 
 func TestLeaseExtend(t *testing.T) {

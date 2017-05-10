@@ -3,8 +3,8 @@ package http
 import (
 	"testing"
 
-	"github.com/hashicorp/vault/helper/jsonutil"
-	"github.com/hashicorp/vault/vault"
+	"github.com/autonubil/vault/helper/jsonutil"
+	"github.com/autonubil/vault/vault"
 )
 
 func TestSysRenew(t *testing.T) {

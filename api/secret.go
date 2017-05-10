@@ -4,7 +4,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/hashicorp/vault/helper/jsonutil"
+	"github.com/autonubil/vault/helper/jsonutil"
 )
 
 // Secret is the structure returned for every secret within Vault.

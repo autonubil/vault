@@ -18,12 +18,12 @@ import (
 	"golang.org/x/net/http2"
 
 	cleanhttp "github.com/hashicorp/go-cleanhttp"
-	"github.com/hashicorp/vault/api"
-	credCert "github.com/hashicorp/vault/builtin/credential/cert"
-	"github.com/hashicorp/vault/builtin/logical/transit"
-	"github.com/hashicorp/vault/helper/keysutil"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/vault"
+	"github.com/autonubil/vault/api"
+	credCert "github.com/autonubil/vault/builtin/credential/cert"
+	"github.com/autonubil/vault/builtin/logical/transit"
+	"github.com/autonubil/vault/helper/keysutil"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/vault"
 )
 
 func TestHTTP_Fallback_Bad_Address(t *testing.T) {
@@ -199,7 +199,9 @@ func testHTTP_Forwarding_Stress_Common(t *testing.T, rpc, parallel bool, num uin
 	transport := &http.Transport{
 		TLSClientConfig: cores[0].TLSConfig,
 	}
-	http2.ConfigureTransport(transport)
+	if err := http2.ConfigureTransport(transport); err != nil {
+		t.Fatal(err)
+	}
 
 	client := &http.Client{
 		Transport: transport,
@@ -499,6 +501,9 @@ func TestHTTP_Forwarding_ClientTLS(t *testing.T) {
 
 	transport := cleanhttp.DefaultTransport()
 	transport.TLSClientConfig = cores[0].TLSConfig
+	if err := http2.ConfigureTransport(transport); err != nil {
+		t.Fatal(err)
+	}
 
 	client := &http.Client{
 		Transport: transport,
@@ -558,13 +563,8 @@ func TestHTTP_Forwarding_ClientTLS(t *testing.T) {
 	//time.Sleep(4 * time.Hour)
 
 	for _, addr := range addrs {
-		config := api.DefaultConfig()
-		config.Address = addr
-		config.HttpClient = client
-		client, err := api.NewClient(config)
-		if err != nil {
-			t.Fatal(err)
-		}
+		client := cores[0].Client
+		client.SetAddress(addr)
 
 		secret, err := client.Logical().Write("auth/cert/login", nil)
 		if err != nil {
@@ -594,4 +594,34 @@ func TestHTTP_Forwarding_ClientTLS(t *testing.T) {
 			t.Fatal("secret data was empty")
 		}
 	}
+}
+
+func TestHTTP_Forwarding_HelpOperation(t *testing.T) {
+	handler1 := http.NewServeMux()
+	handler2 := http.NewServeMux()
+	handler3 := http.NewServeMux()
+
+	cores := vault.TestCluster(t, []http.Handler{handler1, handler2, handler3}, &vault.CoreConfig{}, true)
+	for _, core := range cores {
+		defer core.CloseListeners()
+	}
+
+	handler1.Handle("/", Handler(cores[0].Core))
+	handler2.Handle("/", Handler(cores[1].Core))
+	handler3.Handle("/", Handler(cores[2].Core))
+
+	vault.TestWaitActive(t, cores[0].Core)
+
+	testHelp := func(client *api.Client) {
+		help, err := client.Help("auth/token")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if help == nil {
+			t.Fatal("help was nil")
+		}
+	}
+
+	testHelp(cores[0].Client)
+	testHelp(cores[1].Client)
 }

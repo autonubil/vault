@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/vault/helper/policyutil"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/helper/policyutil"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 func pathUsersList(b *backend) *framework.Path {

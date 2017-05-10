@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hashicorp/vault/meta"
+	"github.com/autonubil/vault/meta"
 )
 
 // PolicyWriteCommand is a Command that enables a new endpoint.

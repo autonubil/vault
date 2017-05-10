@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hashicorp/vault/helper/kv-builder"
-	"github.com/hashicorp/vault/meta"
+	"github.com/autonubil/vault/helper/kv-builder"
+	"github.com/autonubil/vault/meta"
 )
 
 // WriteCommand is a Command that puts data into the Vault.
@@ -32,6 +32,12 @@ func (c *WriteCommand) Run(args []string) int {
 	}
 
 	args = flags.Args()
+	if len(args) < 1 {
+		c.Ui.Error("write requires a path")
+		flags.Usage()
+		return 1
+	}
+
 	if len(args) < 2 && !force {
 		c.Ui.Error("write expects at least two arguments; use -f to perform the write anyways")
 		flags.Usage()

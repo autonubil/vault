@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/hashicorp/vault/helper/compressutil"
+	"github.com/autonubil/vault/helper/compressutil"
 )
 
 // Encodes/Marshals the given object into JSON

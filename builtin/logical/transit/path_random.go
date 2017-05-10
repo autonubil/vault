@@ -7,8 +7,8 @@ import (
 	"strconv"
 
 	uuid "github.com/hashicorp/go-uuid"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 func (b *backend) pathRandom() *framework.Path {

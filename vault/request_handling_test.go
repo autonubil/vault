@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/hashicorp/go-uuid"
-	credUserpass "github.com/hashicorp/vault/builtin/credential/userpass"
-	"github.com/hashicorp/vault/logical"
+	credUserpass "github.com/autonubil/vault/builtin/credential/userpass"
+	"github.com/autonubil/vault/logical"
 )
 
 func TestRequestHandling_Wrapping(t *testing.T) {
@@ -20,7 +20,7 @@ func TestRequestHandling_Wrapping(t *testing.T) {
 		UUID:  meUUID,
 		Path:  "wraptest",
 		Type:  "generic",
-	})
+	}, false)
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}

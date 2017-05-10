@@ -6,9 +6,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/hashicorp/vault/helper/jsonutil"
-	"github.com/hashicorp/vault/logical"
-	logicaltest "github.com/hashicorp/vault/logical/testing"
+	"github.com/autonubil/vault/helper/jsonutil"
+	"github.com/autonubil/vault/logical"
+	logicaltest "github.com/autonubil/vault/logical/testing"
 	"github.com/michaelklishin/rabbit-hole"
 	"github.com/mitchellh/mapstructure"
 )

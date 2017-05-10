@@ -6,8 +6,8 @@ import (
 	"io"
 
 	"github.com/hashicorp/errwrap"
-	"github.com/hashicorp/vault/api"
-	"github.com/hashicorp/vault/command/token"
+	"github.com/autonubil/vault/api"
+	"github.com/autonubil/vault/command/token"
 	"github.com/mitchellh/cli"
 )
 
@@ -21,6 +21,21 @@ const (
 	FlagSetNone    FlagSetFlags = 0
 	FlagSetServer  FlagSetFlags = 1 << iota
 	FlagSetDefault              = FlagSetServer
+)
+
+var (
+	additionalOptionsUsage = func() string {
+		return `
+  -wrap-ttl=""            Indicates that the response should be wrapped in a
+                          cubbyhole token with the requested TTL. The response
+                          can be fetched by calling the "sys/wrapping/unwrap"
+                          endpoint, passing in the wrappping token's ID. This
+                          is a numeric string with an optional suffix
+                          "s", "m", or "h"; if no suffix is specified it will
+                          be parsed as seconds. May also be specified via
+                          VAULT_WRAP_TTL.
+`
+	}
 )
 
 // Meta contains the meta-options and functionality that nearly every
@@ -188,6 +203,6 @@ func GeneralOptionsUsage() string {
                           if VAULT_SKIP_VERIFY is set.
 `
 
-	general += AdditionalOptionsUsage()
+	general += additionalOptionsUsage()
 	return general
 }

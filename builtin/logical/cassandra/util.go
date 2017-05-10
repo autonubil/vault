@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/gocql/gocql"
-	"github.com/hashicorp/vault/helper/certutil"
-	"github.com/hashicorp/vault/helper/tlsutil"
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/helper/certutil"
+	"github.com/autonubil/vault/helper/tlsutil"
+	"github.com/autonubil/vault/logical"
 )
 
 // Query templates a query for us.
@@ -76,7 +76,7 @@ func createSession(cfg *sessionConfig, s logical.Storage) (*gocql.Session, error
 		}
 
 		clusterConfig.SslOpts = &gocql.SslOptions{
-			Config: *tlsConfig,
+			Config: tlsConfig,
 		}
 	}
 

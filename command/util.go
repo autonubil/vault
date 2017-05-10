@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/hashicorp/vault/api"
-	"github.com/hashicorp/vault/command/token"
+	"github.com/autonubil/vault/api"
+	"github.com/autonubil/vault/command/token"
 	"github.com/mitchellh/cli"
 )
 

@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"hash"
 
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 func (b *backend) pathHash() *framework.Path {

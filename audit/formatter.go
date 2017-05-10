@@ -3,8 +3,8 @@ package audit
 import (
 	"io"
 
-	"github.com/hashicorp/vault/helper/salt"
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/helper/salt"
+	"github.com/autonubil/vault/logical"
 )
 
 // Formatter is an interface that is responsible for formating a

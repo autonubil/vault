@@ -15,8 +15,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/vault/helper/errutil"
-	"github.com/hashicorp/vault/helper/jsonutil"
+	"github.com/autonubil/vault/helper/errutil"
+	"github.com/autonubil/vault/helper/jsonutil"
 	"github.com/mitchellh/mapstructure"
 )
 

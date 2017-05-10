@@ -13,9 +13,9 @@
 package mfa
 
 import (
-	"github.com/hashicorp/vault/helper/mfa/duo"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/helper/mfa/duo"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 // MFAPaths returns paths to wrap the original login path and configure MFA.

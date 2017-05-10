@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/hashicorp/vault/helper/jsonutil"
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/helper/jsonutil"
+	"github.com/autonubil/vault/logical"
 )
 
 // PathStruct can be used to generate a path that stores a struct

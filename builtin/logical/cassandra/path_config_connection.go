@@ -4,10 +4,10 @@ import (
 	"fmt"
 
 	"github.com/fatih/structs"
-	"github.com/hashicorp/vault/helper/certutil"
-	"github.com/hashicorp/vault/helper/tlsutil"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/helper/certutil"
+	"github.com/autonubil/vault/helper/tlsutil"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 func pathConfigConnection(b *backend) *framework.Path {

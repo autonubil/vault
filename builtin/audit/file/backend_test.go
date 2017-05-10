@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/hashicorp/vault/audit"
-	"github.com/hashicorp/vault/helper/salt"
+	"github.com/autonubil/vault/audit"
+	"github.com/autonubil/vault/helper/salt"
 )
 
 func TestAuditFile_fileModeNew(t *testing.T) {

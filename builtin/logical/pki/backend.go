@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 // Factory creates a new backend implementing the logical.Backend interface
@@ -28,6 +28,12 @@ func Backend() *backend {
 				"ca",
 				"crl/pem",
 				"crl",
+			},
+
+			LocalStorage: []string{
+				"revoked/",
+				"crl",
+				"certs/",
 			},
 		},
 

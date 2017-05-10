@@ -8,9 +8,12 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -18,14 +21,17 @@ import (
 	"github.com/mitchellh/copystructure"
 
 	"golang.org/x/crypto/ssh"
+	"golang.org/x/net/http2"
 
+	cleanhttp "github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/go-uuid"
-	"github.com/hashicorp/vault/audit"
-	"github.com/hashicorp/vault/helper/logformat"
-	"github.com/hashicorp/vault/helper/salt"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
-	"github.com/hashicorp/vault/physical"
+	"github.com/autonubil/vault/api"
+	"github.com/autonubil/vault/audit"
+	"github.com/autonubil/vault/helper/logformat"
+	"github.com/autonubil/vault/helper/salt"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
+	"github.com/autonubil/vault/physical"
 )
 
 // This file contains a number of methods that are useful for unit
@@ -67,19 +73,37 @@ oOyBJU/HMVvBfv4g+OVFLVgSwwm6owwsouZ0+D/LasbuHqYyqYqdyPJQYzWA2Y+F
 )
 
 // TestCore returns a pure in-memory, uninitialized core for testing.
-func TestCore(t *testing.T) *Core {
+func TestCore(t testing.TB) *Core {
 	return TestCoreWithSeal(t, nil)
 }
 
 // TestCoreNewSeal returns an in-memory, ininitialized core with the new seal
 // configuration.
-func TestCoreNewSeal(t *testing.T) *Core {
+func TestCoreNewSeal(t testing.TB) *Core {
 	return TestCoreWithSeal(t, &TestSeal{})
 }
 
 // TestCoreWithSeal returns a pure in-memory, uninitialized core with the
 // specified seal for testing.
-func TestCoreWithSeal(t *testing.T, testSeal Seal) *Core {
+func TestCoreWithSeal(t testing.TB, testSeal Seal) *Core {
+	logger := logformat.NewVaultLogger(log.LevelTrace)
+	physicalBackend := physical.NewInmem(logger)
+
+	conf := testCoreConfig(t, physicalBackend, logger)
+
+	if testSeal != nil {
+		conf.Seal = testSeal
+	}
+
+	c, err := NewCore(conf)
+	if err != nil {
+		t.Fatalf("err: %s", err)
+	}
+
+	return c
+}
+
+func testCoreConfig(t testing.TB, physicalBackend physical.Backend, logger log.Logger) *CoreConfig {
 	noopAudits := map[string]audit.Factory{
 		"noop": func(config *audit.BackendConfig) (audit.Backend, error) {
 			view := &logical.InmemStorage{}
@@ -118,9 +142,6 @@ func TestCoreWithSeal(t *testing.T, testSeal Seal) *Core {
 		logicalBackends[backendName] = backendFactory
 	}
 
-	logger := logformat.NewVaultLogger(log.LevelTrace)
-
-	physicalBackend := physical.NewInmem(logger)
 	conf := &CoreConfig{
 		Physical:           physicalBackend,
 		AuditBackends:      noopAudits,
@@ -129,25 +150,17 @@ func TestCoreWithSeal(t *testing.T, testSeal Seal) *Core {
 		DisableMlock:       true,
 		Logger:             logger,
 	}
-	if testSeal != nil {
-		conf.Seal = testSeal
-	}
 
-	c, err := NewCore(conf)
-	if err != nil {
-		t.Fatalf("err: %s", err)
-	}
-
-	return c
+	return conf
 }
 
 // TestCoreInit initializes the core with a single key, and returns
 // the key that must be used to unseal the core and a root token.
-func TestCoreInit(t *testing.T, core *Core) ([][]byte, string) {
+func TestCoreInit(t testing.TB, core *Core) ([][]byte, string) {
 	return TestCoreInitClusterWrapperSetup(t, core, nil, func() (http.Handler, http.Handler) { return nil, nil })
 }
 
-func TestCoreInitClusterWrapperSetup(t *testing.T, core *Core, clusterAddrs []*net.TCPAddr, handlerSetupFunc func() (http.Handler, http.Handler)) ([][]byte, string) {
+func TestCoreInitClusterWrapperSetup(t testing.TB, core *Core, clusterAddrs []*net.TCPAddr, handlerSetupFunc func() (http.Handler, http.Handler)) ([][]byte, string) {
 	core.SetClusterListenerAddrs(clusterAddrs)
 	core.SetClusterSetupFuncs(handlerSetupFunc)
 	result, err := core.Initialize(&InitParams{
@@ -155,7 +168,10 @@ func TestCoreInitClusterWrapperSetup(t *testing.T, core *Core, clusterAddrs []*n
 			SecretShares:    3,
 			SecretThreshold: 3,
 		},
-		RecoveryConfig: nil,
+		RecoveryConfig: &SealConfig{
+			SecretShares:    3,
+			SecretThreshold: 3,
+		},
 	})
 	if err != nil {
 		t.Fatalf("err: %s", err)
@@ -170,7 +186,7 @@ func TestCoreUnseal(core *Core, key []byte) (bool, error) {
 
 // TestCoreUnsealed returns a pure in-memory core that is already
 // initialized and unsealed.
-func TestCoreUnsealed(t *testing.T) (*Core, [][]byte, string) {
+func TestCoreUnsealed(t testing.TB) (*Core, [][]byte, string) {
 	core := TestCore(t)
 	keys, token := TestCoreInit(t, core)
 	for _, key := range keys {
@@ -190,11 +206,35 @@ func TestCoreUnsealed(t *testing.T) (*Core, [][]byte, string) {
 	return core, keys, token
 }
 
-// TestCoreWithTokenStore returns an in-memory core that has a token store
-// mounted, so that logical token functions can be used
-func TestCoreWithTokenStore(t *testing.T) (*Core, *TokenStore, [][]byte, string) {
-	c, keys, root := TestCoreUnsealed(t)
+func TestCoreUnsealedBackend(t testing.TB, backend physical.Backend) (*Core, [][]byte, string) {
+	logger := logformat.NewVaultLogger(log.LevelTrace)
+	conf := testCoreConfig(t, backend, logger)
+	conf.Seal = &TestSeal{}
 
+	core, err := NewCore(conf)
+	if err != nil {
+		t.Fatalf("err: %s", err)
+	}
+
+	keys, token := TestCoreInit(t, core)
+	for _, key := range keys {
+		if _, err := TestCoreUnseal(core, TestKeyCopy(key)); err != nil {
+			t.Fatalf("unseal err: %s", err)
+		}
+	}
+
+	sealed, err := core.Sealed()
+	if err != nil {
+		t.Fatalf("err checking seal status: %s", err)
+	}
+	if sealed {
+		t.Fatal("should not be sealed")
+	}
+
+	return core, keys, token
+}
+
+func testTokenStore(t testing.TB, c *Core) *TokenStore {
 	me := &MountEntry{
 		Table:       credentialTableType,
 		Path:        "token/",
@@ -209,8 +249,12 @@ func TestCoreWithTokenStore(t *testing.T) (*Core, *TokenStore, [][]byte, string)
 	me.UUID = meUUID
 
 	view := NewBarrierView(c.barrier, credentialBarrierPrefix+me.UUID+"/")
+	sysView := c.mountEntrySysView(me)
 
-	tokenstore, _ := c.newCredentialBackend("token", c.mountEntrySysView(me), view, nil)
+	tokenstore, _ := c.newCredentialBackend("token", sysView, view, nil)
+	if err := tokenstore.Initialize(); err != nil {
+		panic(err)
+	}
 	ts := tokenstore.(*TokenStore)
 
 	router := NewRouter()
@@ -222,6 +266,25 @@ func TestCoreWithTokenStore(t *testing.T) (*Core, *TokenStore, [][]byte, string)
 	exp := NewExpirationManager(router, subview, ts, logger)
 	ts.SetExpirationManager(exp)
 
+	return ts
+}
+
+// TestCoreWithTokenStore returns an in-memory core that has a token store
+// mounted, so that logical token functions can be used
+func TestCoreWithTokenStore(t testing.TB) (*Core, *TokenStore, [][]byte, string) {
+	c, keys, root := TestCoreUnsealed(t)
+	ts := testTokenStore(t, c)
+
+	return c, ts, keys, root
+}
+
+// TestCoreWithBackendTokenStore returns a core that has a token store
+// mounted and used the provided physical backend, so that logical token
+// functions can be used
+func TestCoreWithBackendTokenStore(t testing.TB, backend physical.Backend) (*Core, *TokenStore, [][]byte, string) {
+	c, keys, root := TestCoreUnsealedBackend(t, backend)
+	ts := testTokenStore(t, c)
+
 	return c, ts, keys, root
 }
 
@@ -231,6 +294,45 @@ func TestKeyCopy(key []byte) []byte {
 	result := make([]byte, len(key))
 	copy(result, key)
 	return result
+}
+
+func TestDynamicSystemView(c *Core) *dynamicSystemView {
+	me := &MountEntry{
+		Config: MountConfig{
+			DefaultLeaseTTL: 24 * time.Hour,
+			MaxLeaseTTL:     2 * 24 * time.Hour,
+		},
+	}
+
+	return &dynamicSystemView{c, me}
+}
+
+func TestAddTestPlugin(t testing.TB, c *Core, name, testFunc string) {
+	file, err := os.Open(os.Args[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer file.Close()
+
+	hash := sha256.New()
+
+	_, err = io.Copy(hash, file)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	sum := hash.Sum(nil)
+	c.pluginCatalog.directory, err = filepath.EvalSymlinks(os.Args[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+	c.pluginCatalog.directory = filepath.Dir(c.pluginCatalog.directory)
+
+	command := fmt.Sprintf("%s --test.run=%s", filepath.Base(os.Args[0]), testFunc)
+	err = c.pluginCatalog.Set(name, command, sum)
+	if err != nil {
+		t.Fatal(err)
+	}
 }
 
 var testLogicalBackends = map[string]logical.Factory{}
@@ -420,7 +522,7 @@ func GenerateRandBytes(length int) ([]byte, error) {
 	return buf, nil
 }
 
-func TestWaitActive(t *testing.T, core *Core) {
+func TestWaitActive(t testing.TB, core *Core) {
 	start := time.Now()
 	var standby bool
 	var err error
@@ -451,6 +553,8 @@ type TestClusterCore struct {
 	CACertBytes []byte
 	CACert      *x509.Certificate
 	TLSConfig   *tls.Config
+	ClusterID   string
+	Client      *api.Client
 }
 
 func (t *TestClusterCore) CloseListeners() {
@@ -463,7 +567,7 @@ func (t *TestClusterCore) CloseListeners() {
 	time.Sleep(time.Second)
 }
 
-func TestCluster(t *testing.T, handlers []http.Handler, base *CoreConfig, unsealStandbys bool) []*TestClusterCore {
+func TestCluster(t testing.TB, handlers []http.Handler, base *CoreConfig, unsealStandbys bool) []*TestClusterCore {
 	if handlers == nil || len(handlers) != 3 {
 		t.Fatal("handlers must be size 3")
 	}
@@ -492,7 +596,7 @@ func TestCluster(t *testing.T, handlers []http.Handler, base *CoreConfig, unseal
 		Certificates: []tls.Certificate{serverCert},
 		RootCAs:      rootCAs,
 		ClientCAs:    rootCAs,
-		ClientAuth:   tls.RequireAndVerifyClientCert,
+		ClientAuth:   tls.VerifyClientCertIfGiven,
 	}
 	tlsConfig.BuildNameToCertificate()
 
@@ -559,6 +663,9 @@ func TestCluster(t *testing.T, handlers []http.Handler, base *CoreConfig, unseal
 	server1 := &http.Server{
 		Handler: handlers[0],
 	}
+	if err := http2.ConfigureServer(server1, nil); err != nil {
+		t.Fatal(err)
+	}
 	for _, ln := range c1lns {
 		go server1.Serve(ln)
 	}
@@ -577,6 +684,9 @@ func TestCluster(t *testing.T, handlers []http.Handler, base *CoreConfig, unseal
 	}
 	server2 := &http.Server{
 		Handler: handlers[1],
+	}
+	if err := http2.ConfigureServer(server2, nil); err != nil {
+		t.Fatal(err)
 	}
 	for _, ln := range c2lns {
 		go server2.Serve(ln)
@@ -597,6 +707,9 @@ func TestCluster(t *testing.T, handlers []http.Handler, base *CoreConfig, unseal
 	server3 := &http.Server{
 		Handler: handlers[2],
 	}
+	if err := http2.ConfigureServer(server3, nil); err != nil {
+		t.Fatal(err)
+	}
 	for _, ln := range c3lns {
 		go server3.Serve(ln)
 	}
@@ -608,8 +721,6 @@ func TestCluster(t *testing.T, handlers []http.Handler, base *CoreConfig, unseal
 	// the redirect addr. This has now been changed to 10 ports above, but if
 	// we ever do more than three nodes in a cluster it may need to be bumped.
 	coreConfig := &CoreConfig{
-		Physical:           physical.NewInmem(logger),
-		HAPhysical:         physical.NewInmemHA(logger),
 		LogicalBackends:    make(map[string]logical.Factory),
 		CredentialBackends: make(map[string]logical.Factory),
 		AuditBackends:      make(map[string]audit.Factory),
@@ -619,6 +730,14 @@ func TestCluster(t *testing.T, handlers []http.Handler, base *CoreConfig, unseal
 	}
 
 	if base != nil {
+		if base.Physical != nil {
+			coreConfig.Physical = base.Physical
+		}
+
+		if base.HAPhysical != nil {
+			coreConfig.HAPhysical = base.HAPhysical
+		}
+
 		// Used to set something non-working to test fallback
 		switch base.ClusterAddr {
 		case "empty":
@@ -646,6 +765,13 @@ func TestCluster(t *testing.T, handlers []http.Handler, base *CoreConfig, unseal
 		if base.Logger != nil {
 			coreConfig.Logger = base.Logger
 		}
+	}
+
+	if coreConfig.Physical == nil {
+		coreConfig.Physical = physical.NewInmem(logger)
+	}
+	if coreConfig.HAPhysical == nil {
+		coreConfig.HAPhysical = physical.NewInmemHA(logger)
 	}
 
 	c1, err := NewCore(coreConfig)
@@ -739,6 +865,32 @@ func TestCluster(t *testing.T, handlers []http.Handler, base *CoreConfig, unseal
 		}
 	}
 
+	cluster, err := c1.Cluster()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	getAPIClient := func(port int) *api.Client {
+		transport := cleanhttp.DefaultPooledTransport()
+		transport.TLSClientConfig = tlsConfig
+		client := &http.Client{
+			Transport: transport,
+			CheckRedirect: func(*http.Request, []*http.Request) error {
+				// This can of course be overridden per-test by using its own client
+				return fmt.Errorf("redirects not allowed in these tests")
+			},
+		}
+		config := api.DefaultConfig()
+		config.Address = fmt.Sprintf("https://127.0.0.1:%d", port)
+		config.HttpClient = client
+		apiClient, err := api.NewClient(config)
+		if err != nil {
+			t.Fatal(err)
+		}
+		apiClient.SetToken(root)
+		return apiClient
+	}
+
 	var ret []*TestClusterCore
 	keyCopies, _ := copystructure.Copy(keys)
 	ret = append(ret, &TestClusterCore{
@@ -749,6 +901,8 @@ func TestCluster(t *testing.T, handlers []http.Handler, base *CoreConfig, unseal
 		CACertBytes: caBytes,
 		CACert:      caCert,
 		TLSConfig:   tlsConfig,
+		ClusterID:   cluster.ID,
+		Client:      getAPIClient(c1lns[0].Address.Port),
 	})
 
 	keyCopies, _ = copystructure.Copy(keys)
@@ -760,6 +914,8 @@ func TestCluster(t *testing.T, handlers []http.Handler, base *CoreConfig, unseal
 		CACertBytes: caBytes,
 		CACert:      caCert,
 		TLSConfig:   tlsConfig,
+		ClusterID:   cluster.ID,
+		Client:      getAPIClient(c2lns[0].Address.Port),
 	})
 
 	keyCopies, _ = copystructure.Copy(keys)
@@ -771,6 +927,8 @@ func TestCluster(t *testing.T, handlers []http.Handler, base *CoreConfig, unseal
 		CACertBytes: caBytes,
 		CACert:      caCert,
 		TLSConfig:   tlsConfig,
+		ClusterID:   cluster.ID,
+		Client:      getAPIClient(c3lns[0].Address.Port),
 	})
 
 	return ret

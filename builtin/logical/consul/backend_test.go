@@ -11,8 +11,8 @@ import (
 	"time"
 
 	consulapi "github.com/hashicorp/consul/api"
-	"github.com/hashicorp/vault/logical"
-	logicaltest "github.com/hashicorp/vault/logical/testing"
+	"github.com/autonubil/vault/logical"
+	logicaltest "github.com/autonubil/vault/logical/testing"
 	"github.com/mitchellh/mapstructure"
 	dockertest "gopkg.in/ory-am/dockertest.v2"
 )

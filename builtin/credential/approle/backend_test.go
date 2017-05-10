@@ -3,7 +3,7 @@ package approle
 import (
 	"testing"
 
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/logical"
 )
 
 func createBackendWithStorage(t *testing.T) (*backend, logical.Storage) {
@@ -18,6 +18,10 @@ func createBackendWithStorage(t *testing.T) (*backend, logical.Storage) {
 		t.Fatalf("failed to create backend")
 	}
 	_, err = b.Backend.Setup(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = b.Initialize()
 	if err != nil {
 		t.Fatal(err)
 	}

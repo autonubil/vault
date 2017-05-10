@@ -8,8 +8,8 @@ import (
 	"net/url"
 
 	"github.com/duosecurity/duo_api_golang/authapi"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 // DuoPaths returns path functions to configure Duo.

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/vault/meta"
+	"github.com/autonubil/vault/meta"
 )
 
 // RevokeCommand is a Command that mounts a new mount.
@@ -26,7 +26,7 @@ func (c *RevokeCommand) Run(args []string) int {
 	if len(args) != 1 {
 		flags.Usage()
 		c.Ui.Error(fmt.Sprintf(
-			"\nRevoke expects one argument: the ID to revoke"))
+			"\nrevoke expects one argument: the ID to revoke"))
 		return 1
 	}
 	leaseId := args[0]

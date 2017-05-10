@@ -1,7 +1,7 @@
 package command
 
 import (
-	"github.com/hashicorp/vault/version"
+	"github.com/autonubil/vault/version"
 	"github.com/mitchellh/cli"
 )
 

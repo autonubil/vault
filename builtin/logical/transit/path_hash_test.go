@@ -3,7 +3,7 @@ package transit
 import (
 	"testing"
 
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/logical"
 )
 
 func TestTransit_Hash(t *testing.T) {

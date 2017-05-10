@@ -3,8 +3,8 @@ package github
 import (
 	"github.com/google/go-github/github"
 	"github.com/hashicorp/go-cleanhttp"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 	"golang.org/x/oauth2"
 )
 

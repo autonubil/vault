@@ -4,10 +4,10 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"github.com/hashicorp/vault/helper/certutil"
-	"github.com/hashicorp/vault/helper/errutil"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/helper/certutil"
+	"github.com/autonubil/vault/helper/errutil"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 func pathGenerateIntermediate(b *backend) *framework.Path {
@@ -196,7 +196,7 @@ func (b *backend) pathSetSignedIntermediate(
 		return nil, err
 	}
 
-	entry.Key = "certs/" + cb.SerialNumber
+	entry.Key = "certs/" + normalizeSerial(cb.SerialNumber)
 	entry.Value = inputBundle.CertificateBytes
 	err = req.Storage.Put(entry)
 	if err != nil {

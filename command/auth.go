@@ -10,10 +10,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/vault/api"
-	"github.com/hashicorp/vault/helper/kv-builder"
-	"github.com/hashicorp/vault/helper/password"
-	"github.com/hashicorp/vault/meta"
+	"github.com/autonubil/vault/api"
+	"github.com/autonubil/vault/helper/kv-builder"
+	"github.com/autonubil/vault/helper/password"
+	"github.com/autonubil/vault/meta"
 	"github.com/mitchellh/mapstructure"
 	"github.com/ryanuber/columnize"
 )
@@ -281,7 +281,7 @@ func (c *AuthCommand) listMethods() int {
 	}
 	sort.Strings(paths)
 
-	columns := []string{"Path | Type | Default TTL | Max TTL | Description"}
+	columns := []string{"Path | Type | Default TTL | Max TTL | Replication Behavior | Description"}
 	for _, path := range paths {
 		auth := auth[path]
 		defTTL := "system"
@@ -292,8 +292,12 @@ func (c *AuthCommand) listMethods() int {
 		if auth.Config.MaxLeaseTTL != 0 {
 			maxTTL = strconv.Itoa(auth.Config.MaxLeaseTTL)
 		}
+		replicatedBehavior := "replicated"
+		if auth.Local {
+			replicatedBehavior = "local"
+		}
 		columns = append(columns, fmt.Sprintf(
-			"%s | %s | %s | %s | %s", path, auth.Type, defTTL, maxTTL, auth.Description))
+			"%s | %s | %s | %s | %s | %s", path, auth.Type, defTTL, maxTTL, replicatedBehavior, auth.Description))
 	}
 
 	c.Ui.Output(columnize.SimpleFormat(columns))
@@ -308,7 +312,7 @@ func (c *AuthCommand) Help() string {
 	helpText := `
 Usage: vault auth [options] [auth-information]
 
-  Authenticate with Vault with the given token or via any supported
+  Authenticate with Vault using the given token or via any supported
   authentication backend.
 
   By default, the -method is assumed to be token. If not supplied via the
@@ -395,7 +399,7 @@ func (h *tokenAuthHandler) Help() string {
 	help := `
 No method selected with the "-method" flag, so the "auth" command assumes
 you'll be using raw token authentication. For this, specify the token to
-authenticate as as the parameter to "vault auth". Example:
+authenticate as the parameter to "vault auth". Example:
 
     vault auth 123456
 

@@ -7,9 +7,9 @@ import (
 
 	"github.com/gocql/gocql"
 	"github.com/hashicorp/go-uuid"
-	"github.com/hashicorp/vault/helper/strutil"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/helper/strutil"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 func pathCredsCreate(b *backend) *framework.Path {

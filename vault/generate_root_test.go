@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/hashicorp/go-uuid"
-	"github.com/hashicorp/vault/helper/pgpkeys"
-	"github.com/hashicorp/vault/helper/xor"
+	"github.com/autonubil/vault/helper/pgpkeys"
+	"github.com/autonubil/vault/helper/xor"
 )
 
 func TestCore_GenerateRoot_Lifecycle(t *testing.T) {

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/vault/logical"
-	logicaltest "github.com/hashicorp/vault/logical/testing"
+	"github.com/autonubil/vault/logical"
+	logicaltest "github.com/autonubil/vault/logical/testing"
 )
 
 func TestBackend_basic(t *testing.T) {
@@ -69,6 +69,10 @@ func TestBackend_upgradeToSalted(t *testing.T) {
 		StorageView: inm,
 	}
 	backend, err := Factory(conf)
+	if err != nil {
+		t.Fatalf("err: %v", err)
+	}
+	err = backend.Initialize()
 	if err != nil {
 		t.Fatalf("err: %v", err)
 	}

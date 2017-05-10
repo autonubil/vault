@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/vault/api"
-	"github.com/hashicorp/vault/meta"
+	"github.com/autonubil/vault/api"
+	"github.com/autonubil/vault/meta"
 )
 
 // TokenLookupCommand is a Command that outputs details about the

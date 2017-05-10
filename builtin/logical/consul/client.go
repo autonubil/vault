@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/consul/api"
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/logical"
 )
 
 func client(s logical.Storage) (*api.Client, error, error) {

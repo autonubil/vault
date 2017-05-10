@@ -16,8 +16,8 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/hashicorp/go-cleanhttp"
-	"github.com/hashicorp/vault/logical"
-	logicaltest "github.com/hashicorp/vault/logical/testing"
+	"github.com/autonubil/vault/logical"
+	logicaltest "github.com/autonubil/vault/logical/testing"
 	"github.com/mitchellh/mapstructure"
 )
 

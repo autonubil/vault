@@ -9,7 +9,7 @@ import (
 	"hash"
 
 	"github.com/hashicorp/go-uuid"
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/logical"
 )
 
 const (

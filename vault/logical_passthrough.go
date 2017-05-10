@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/vault/helper/duration"
-	"github.com/hashicorp/vault/helper/jsonutil"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/helper/parseutil"
+	"github.com/autonubil/vault/helper/jsonutil"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 // PassthroughBackendFactory returns a PassthroughBackend
@@ -133,7 +133,7 @@ func (b *PassthroughBackend) handleRead(
 	}
 	ttlDuration := b.System().DefaultLeaseTTL()
 	if len(ttl) != 0 {
-		dur, err := duration.ParseDurationSecond(ttl)
+		dur, err := parseutil.ParseDurationSecond(ttl)
 		if err == nil {
 			ttlDuration = dur
 		}

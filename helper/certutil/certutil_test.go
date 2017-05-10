@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/fatih/structs"
-	"github.com/hashicorp/vault/api"
+	"github.com/autonubil/vault/api"
 )
 
 // Tests converting back and forth between a CertBundle and a ParsedCertBundle.

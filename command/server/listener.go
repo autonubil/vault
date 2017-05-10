@@ -11,8 +11,8 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/hashicorp/vault/helper/tlsutil"
-	"github.com/hashicorp/vault/vault"
+	"github.com/autonubil/vault/helper/tlsutil"
+	"github.com/autonubil/vault/vault"
 )
 
 // ListenerFactory is the factory function to create a listener.
@@ -82,6 +82,30 @@ func listenerWrapTLS(
 		return nil, nil, nil, fmt.Errorf("'tls_min_version' value %s not supported, please specify one of [tls10,tls11,tls12]", tlsvers)
 	}
 	tlsConf.ClientAuth = tls.RequestClientCert
+
+	if v, ok := config["tls_cipher_suites"]; ok {
+		ciphers, err := tlsutil.ParseCiphers(v)
+		if err != nil {
+			return nil, nil, nil, fmt.Errorf("invalid value for 'tls_cipher_suites': %v", err)
+		}
+		tlsConf.CipherSuites = ciphers
+	}
+	if v, ok := config["tls_prefer_server_cipher_suites"]; ok {
+		preferServer, err := strconv.ParseBool(v)
+		if err != nil {
+			return nil, nil, nil, fmt.Errorf("invalid value for 'tls_prefer_server_cipher_suites': %v", err)
+		}
+		tlsConf.PreferServerCipherSuites = preferServer
+	}
+	if v, ok := config["tls_require_and_verify_client_cert"]; ok {
+		requireClient, err := strconv.ParseBool(v)
+		if err != nil {
+			return nil, nil, nil, fmt.Errorf("invalid value for 'tls_require_and_verify_client_cert': %v", err)
+		}
+		if requireClient {
+			tlsConf.ClientAuth = tls.RequireAndVerifyClientCert
+		}
+	}
 
 	ln = tls.NewListener(ln, tlsConf)
 	props["tls"] = "enabled"

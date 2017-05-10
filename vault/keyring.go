@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/hashicorp/vault/helper/jsonutil"
+	"github.com/autonubil/vault/helper/jsonutil"
 )
 
 // Keyring is used to manage multiple encryption keys used by

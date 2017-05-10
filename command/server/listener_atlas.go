@@ -5,8 +5,8 @@ import (
 	"net"
 
 	"github.com/hashicorp/scada-client/scada"
-	"github.com/hashicorp/vault/vault"
-	"github.com/hashicorp/vault/version"
+	"github.com/autonubil/vault/vault"
+	"github.com/autonubil/vault/version"
 )
 
 type SCADAListener struct {

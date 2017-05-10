@@ -8,8 +8,8 @@ import (
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/sts"
 	"github.com/hashicorp/go-cleanhttp"
-	"github.com/hashicorp/vault/helper/awsutil"
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/helper/awsutil"
+	"github.com/autonubil/vault/logical"
 )
 
 func getRootConfig(s logical.Storage) (*aws.Config, error) {

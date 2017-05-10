@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/vault/meta"
+	"github.com/autonubil/vault/meta"
 )
 
 // PolicyListCommand is a Command that enables a new endpoint.

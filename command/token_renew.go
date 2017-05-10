@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/vault/api"
-	"github.com/hashicorp/vault/helper/duration"
-	"github.com/hashicorp/vault/meta"
+	"github.com/autonubil/vault/api"
+	"github.com/autonubil/vault/helper/parseutil"
+	"github.com/autonubil/vault/meta"
 )
 
 // TokenRenewCommand is a Command that mounts a new mount.
@@ -44,7 +44,7 @@ func (c *TokenRenewCommand) Run(args []string) int {
 		increment = args[1]
 	}
 	if increment != "" {
-		dur, err := duration.ParseDurationSecond(increment)
+		dur, err := parseutil.ParseDurationSecond(increment)
 		if err != nil {
 			c.Ui.Error(fmt.Sprintf("Invalid increment: %s", err))
 			return 1

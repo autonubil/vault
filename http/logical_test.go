@@ -4,16 +4,18 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"net/http"
 	"reflect"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 
 	log "github.com/mgutz/logxi/v1"
 
-	"github.com/hashicorp/vault/helper/logformat"
-	"github.com/hashicorp/vault/physical"
-	"github.com/hashicorp/vault/vault"
+	"github.com/autonubil/vault/helper/logformat"
+	"github.com/autonubil/vault/physical"
+	"github.com/autonubil/vault/vault"
 )
 
 func TestLogical(t *testing.T) {
@@ -101,7 +103,7 @@ func TestLogical_StandbyRedirect(t *testing.T) {
 
 	// Attempt to fix raciness in this test by giving the first core a chance
 	// to grab the lock
-	time.Sleep(time.Second)
+	time.Sleep(2 * time.Second)
 
 	// Create a second HA Vault
 	conf2 := &vault.CoreConfig{
@@ -150,6 +152,7 @@ func TestLogical_StandbyRedirect(t *testing.T) {
 			"ttl":              json.Number("0"),
 			"creation_ttl":     json.Number("0"),
 			"explicit_max_ttl": json.Number("0"),
+			"expire_time":      nil,
 		},
 		"warnings":  nilWarnings,
 		"wrap_info": nil,
@@ -251,4 +254,43 @@ func TestLogical_RequestSizeLimit(t *testing.T) {
 		"data": make([]byte, MaxRequestSize),
 	})
 	testResponseStatus(t, resp, 413)
+}
+
+func TestLogical_ListSuffix(t *testing.T) {
+	core, _, _ := vault.TestCoreUnsealed(t)
+	req, _ := http.NewRequest("GET", "http://127.0.0.1:8200/v1/secret/foo", nil)
+	lreq, status, err := buildLogicalRequest(core, nil, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if status != 0 {
+		t.Fatalf("got status %d", status)
+	}
+	if strings.HasSuffix(lreq.Path, "/") {
+		t.Fatal("trailing slash found on path")
+	}
+
+	req, _ = http.NewRequest("GET", "http://127.0.0.1:8200/v1/secret/foo?list=true", nil)
+	lreq, status, err = buildLogicalRequest(core, nil, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if status != 0 {
+		t.Fatalf("got status %d", status)
+	}
+	if !strings.HasSuffix(lreq.Path, "/") {
+		t.Fatal("trailing slash not found on path")
+	}
+
+	req, _ = http.NewRequest("LIST", "http://127.0.0.1:8200/v1/secret/foo", nil)
+	lreq, status, err = buildLogicalRequest(core, nil, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if status != 0 {
+		t.Fatalf("got status %d", status)
+	}
+	if !strings.HasSuffix(lreq.Path, "/") {
+		t.Fatal("trailing slash not found on path")
+	}
 }

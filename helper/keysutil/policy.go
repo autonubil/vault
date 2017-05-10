@@ -24,10 +24,10 @@ import (
 	"golang.org/x/crypto/hkdf"
 
 	uuid "github.com/hashicorp/go-uuid"
-	"github.com/hashicorp/vault/helper/errutil"
-	"github.com/hashicorp/vault/helper/jsonutil"
-	"github.com/hashicorp/vault/helper/kdf"
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/helper/errutil"
+	"github.com/autonubil/vault/helper/jsonutil"
+	"github.com/autonubil/vault/helper/kdf"
+	"github.com/autonubil/vault/logical"
 )
 
 // Careful with iota; don't put anything before it in this const block because
@@ -146,6 +146,9 @@ type Policy struct {
 	Derived              bool `json:"derived"`
 	KDF                  int  `json:"kdf"`
 	ConvergentEncryption bool `json:"convergent_encryption"`
+
+	// Whether the key is exportable
+	Exportable bool `json:"exportable"`
 
 	// The minimum version of the key allowed to be used
 	// for decryption

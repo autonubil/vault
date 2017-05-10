@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/vault/meta"
+	"github.com/autonubil/vault/meta"
 )
 
 // DeleteCommand is a Command that puts data into the Vault.

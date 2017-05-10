@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/hashicorp/vault/helper/errutil"
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/helper/errutil"
+	"github.com/autonubil/vault/logical"
 )
 
 type revocationInfo struct {
@@ -65,7 +65,7 @@ func revokeCert(b *backend, req *logical.Request, serial string, fromLease bool)
 
 		cert, err := x509.ParseCertificate(certEntry.Value)
 		if err != nil {
-			return nil, fmt.Errorf("Error parsing certificate")
+			return nil, fmt.Errorf("Error parsing certificate: %s", err)
 		}
 		if cert == nil {
 			return nil, fmt.Errorf("Got a nil certificate")
@@ -86,7 +86,7 @@ func revokeCert(b *backend, req *logical.Request, serial string, fromLease bool)
 		revInfo.RevocationTime = currTime.Unix()
 		revInfo.RevocationTimeUTC = currTime.UTC()
 
-		revEntry, err = logical.StorageEntryJSON("revoked/"+serial, revInfo)
+		revEntry, err = logical.StorageEntryJSON("revoked/"+normalizeSerial(serial), revInfo)
 		if err != nil {
 			return nil, fmt.Errorf("Error creating revocation entry")
 		}

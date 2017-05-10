@@ -3,34 +3,41 @@ package cli
 import (
 	"os"
 
-	auditFile "github.com/hashicorp/vault/builtin/audit/file"
-	auditSyslog "github.com/hashicorp/vault/builtin/audit/syslog"
-	"github.com/hashicorp/vault/version"
+	auditFile "github.com/autonubil/vault/builtin/audit/file"
+	auditSocket "github.com/autonubil/vault/builtin/audit/socket"
+	auditSyslog "github.com/autonubil/vault/builtin/audit/syslog"
+	"github.com/autonubil/vault/version"
 
-	credAppId "github.com/hashicorp/vault/builtin/credential/app-id"
-	credAppRole "github.com/hashicorp/vault/builtin/credential/approle"
-	credAwsEc2 "github.com/hashicorp/vault/builtin/credential/aws-ec2"
-	credCert "github.com/hashicorp/vault/builtin/credential/cert"
-	credGitHub "github.com/hashicorp/vault/builtin/credential/github"
-	credLdap "github.com/hashicorp/vault/builtin/credential/ldap"
-	credUserpass "github.com/hashicorp/vault/builtin/credential/userpass"
+	credAppId "github.com/autonubil/vault/builtin/credential/app-id"
+	credAppRole "github.com/autonubil/vault/builtin/credential/approle"
+	credAws "github.com/autonubil/vault/builtin/credential/aws"
+	credCert "github.com/autonubil/vault/builtin/credential/cert"
+	credGitHub "github.com/autonubil/vault/builtin/credential/github"
+	credLdap "github.com/autonubil/vault/builtin/credential/ldap"
+	credOkta "github.com/autonubil/vault/builtin/credential/okta"
+	credRadius "github.com/autonubil/vault/builtin/credential/radius"
+	credUserpass "github.com/autonubil/vault/builtin/credential/userpass"
+        credChef "github.com/autonubil/vault-chef/credential/chef"
 
-	"github.com/hashicorp/vault/builtin/logical/aws"
-	"github.com/hashicorp/vault/builtin/logical/cassandra"
-	"github.com/hashicorp/vault/builtin/logical/consul"
-	"github.com/hashicorp/vault/builtin/logical/mongodb"
-	"github.com/hashicorp/vault/builtin/logical/mssql"
-	"github.com/hashicorp/vault/builtin/logical/mysql"
-	"github.com/hashicorp/vault/builtin/logical/pki"
-	"github.com/hashicorp/vault/builtin/logical/postgresql"
-	"github.com/hashicorp/vault/builtin/logical/rabbitmq"
-	"github.com/hashicorp/vault/builtin/logical/ssh"
-	"github.com/hashicorp/vault/builtin/logical/transit"
 
-	"github.com/hashicorp/vault/audit"
-	"github.com/hashicorp/vault/command"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/meta"
+	"github.com/autonubil/vault/builtin/logical/aws"
+	"github.com/autonubil/vault/builtin/logical/cassandra"
+	"github.com/autonubil/vault/builtin/logical/consul"
+	"github.com/autonubil/vault/builtin/logical/database"
+	"github.com/autonubil/vault/builtin/logical/mongodb"
+	"github.com/autonubil/vault/builtin/logical/mssql"
+	"github.com/autonubil/vault/builtin/logical/mysql"
+	"github.com/autonubil/vault/builtin/logical/pki"
+	"github.com/autonubil/vault/builtin/logical/postgresql"
+	"github.com/autonubil/vault/builtin/logical/rabbitmq"
+	"github.com/autonubil/vault/builtin/logical/ssh"
+	"github.com/autonubil/vault/builtin/logical/totp"
+	"github.com/autonubil/vault/builtin/logical/transit"
+
+	"github.com/autonubil/vault/audit"
+	"github.com/autonubil/vault/command"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/meta"
 	"github.com/mitchellh/cli"
 )
 
@@ -63,15 +70,21 @@ func Commands(metaPtr *meta.Meta) map[string]cli.CommandFactory {
 				AuditBackends: map[string]audit.Factory{
 					"file":   auditFile.Factory,
 					"syslog": auditSyslog.Factory,
+					"socket": auditSocket.Factory,
 				},
 				CredentialBackends: map[string]logical.Factory{
 					"approle":  credAppRole.Factory,
 					"cert":     credCert.Factory,
-					"aws-ec2":  credAwsEc2.Factory,
+					"aws":      credAws.Factory,
 					"app-id":   credAppId.Factory,
 					"github":   credGitHub.Factory,
 					"userpass": credUserpass.Factory,
 					"ldap":     credLdap.Factory,
+					"okta":     credOkta.Factory,
+					"radius":   credRadius.Factory,
+                                        // autonubil Chef Authentication
+                                        "chef": credChef.Factory,
+
 				},
 				LogicalBackends: map[string]logical.Factory{
 					"aws":        aws.Factory,
@@ -85,6 +98,8 @@ func Commands(metaPtr *meta.Meta) map[string]cli.CommandFactory {
 					"mysql":      mysql.Factory,
 					"ssh":        ssh.Factory,
 					"rabbitmq":   rabbitmq.Factory,
+					"database":   database.Factory,
+					"totp":       totp.Factory,
 				},
 				ShutdownCh: command.MakeShutdownCh(),
 				SighupCh:   command.MakeSighupCh(),
@@ -108,9 +123,15 @@ func Commands(metaPtr *meta.Meta) map[string]cli.CommandFactory {
 				Meta: *metaPtr,
 				Handlers: map[string]command.AuthHandler{
 					"github":   &credGitHub.CLIHandler{},
-					"userpass": &credUserpass.CLIHandler{},
+					"userpass": &credUserpass.CLIHandler{DefaultMount: "userpass"},
 					"ldap":     &credLdap.CLIHandler{},
+					"okta":     &credOkta.CLIHandler{},
 					"cert":     &credCert.CLIHandler{},
+					"aws":      &credAws.CLIHandler{},
+					"radius":   &credUserpass.CLIHandler{DefaultMount: "radius"},
+                                        // autonubil Chef Authentication
+                                        "chef": &credChef.CLIHandler{},
+
 				},
 			}, nil
 		},

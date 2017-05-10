@@ -6,8 +6,8 @@ import (
 	"sync"
 
 	"github.com/hashicorp/go-cleanhttp"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 	"github.com/michaelklishin/rabbit-hole"
 )
 
@@ -35,6 +35,8 @@ func Backend() *backend {
 		},
 
 		Clean: b.resetClient,
+
+		Invalidate: b.invalidate,
 	}
 
 	return &b
@@ -97,6 +99,13 @@ func (b *backend) resetClient() {
 	defer b.lock.Unlock()
 
 	b.client = nil
+}
+
+func (b *backend) invalidate(key string) {
+	switch key {
+	case "config/connection":
+		b.resetClient()
+	}
 }
 
 // Lease returns the lease information

@@ -10,7 +10,7 @@ import (
 	log "github.com/mgutz/logxi/v1"
 
 	"cloud.google.com/go/storage"
-	"github.com/hashicorp/vault/helper/logformat"
+	"github.com/autonubil/vault/helper/logformat"
 	"golang.org/x/net/context"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"

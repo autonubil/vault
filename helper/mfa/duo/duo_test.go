@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/duosecurity/duo_api_golang/authapi"
-	"github.com/hashicorp/vault/helper/jsonutil"
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/helper/jsonutil"
+	"github.com/autonubil/vault/logical"
 )
 
 type MockClientData struct {

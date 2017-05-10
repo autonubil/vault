@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/go-uuid"
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/logical"
 )
 
 type NoopBackend struct {
@@ -58,8 +58,8 @@ func (n *NoopBackend) Cleanup() {
 	// noop
 }
 
-func (n *NoopBackend) InvalidateKey(string) {
-	// noop
+func (n *NoopBackend) InvalidateKey(k string) {
+	n.Invalidations = append(n.Invalidations, k)
 }
 
 func (n *NoopBackend) Initialize() error {
@@ -95,7 +95,7 @@ func TestRouter_Mount(t *testing.T) {
 	}
 
 	if v := r.MatchingStorageView("prod/aws/foo"); v != view {
-		t.Fatalf("bad: %s", v)
+		t.Fatalf("bad: %v", v)
 	}
 
 	if path := r.MatchingMount("stage/aws/foo"); path != "" {
@@ -103,7 +103,7 @@ func TestRouter_Mount(t *testing.T) {
 	}
 
 	if v := r.MatchingStorageView("stage/aws/foo"); v != nil {
-		t.Fatalf("bad: %s", v)
+		t.Fatalf("bad: %v", v)
 	}
 
 	mount, prefix, ok := r.MatchingStoragePrefix("logical/foo")

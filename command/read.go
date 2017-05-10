@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/vault/api"
-	"github.com/hashicorp/vault/meta"
+	"github.com/autonubil/vault/api"
+	"github.com/autonubil/vault/meta"
 )
 
 // ReadCommand is a Command that reads data from the Vault.

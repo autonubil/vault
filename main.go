@@ -1,9 +1,9 @@
-package main // import "github.com/hashicorp/vault"
+package main // import "github.com/autonubil/vault"
 
 import (
 	"os"
 
-	"github.com/hashicorp/vault/cli"
+	"github.com/autonubil/vault/cli"
 )
 
 func main() {

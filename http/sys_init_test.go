@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/hashicorp/vault/vault"
+	"github.com/autonubil/vault/vault"
 )
 
 func TestSysInit_get(t *testing.T) {

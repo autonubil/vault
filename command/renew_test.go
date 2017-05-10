@@ -3,10 +3,10 @@ package command
 import (
 	"testing"
 
-	"github.com/hashicorp/vault/api"
-	"github.com/hashicorp/vault/http"
-	"github.com/hashicorp/vault/meta"
-	"github.com/hashicorp/vault/vault"
+	"github.com/autonubil/vault/api"
+	"github.com/autonubil/vault/http"
+	"github.com/autonubil/vault/meta"
+	"github.com/autonubil/vault/vault"
 	"github.com/mitchellh/cli"
 )
 

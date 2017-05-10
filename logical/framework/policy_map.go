@@ -4,7 +4,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/logical"
 )
 
 // PolicyMap is a specialization of PathMap that expects the values to

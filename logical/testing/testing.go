@@ -11,12 +11,12 @@ import (
 	log "github.com/mgutz/logxi/v1"
 
 	"github.com/hashicorp/errwrap"
-	"github.com/hashicorp/vault/api"
-	"github.com/hashicorp/vault/helper/logformat"
-	"github.com/hashicorp/vault/http"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/physical"
-	"github.com/hashicorp/vault/vault"
+	"github.com/autonubil/vault/api"
+	"github.com/autonubil/vault/helper/logformat"
+	"github.com/autonubil/vault/http"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/physical"
+	"github.com/autonubil/vault/vault"
 )
 
 // TestEnvVar must be set to a non-empty value for acceptance tests to run.

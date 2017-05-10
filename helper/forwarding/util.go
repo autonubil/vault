@@ -9,8 +9,8 @@ import (
 	"os"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/hashicorp/vault/helper/compressutil"
-	"github.com/hashicorp/vault/helper/jsonutil"
+	"github.com/autonubil/vault/helper/compressutil"
+	"github.com/autonubil/vault/helper/jsonutil"
 )
 
 type bufCloser struct {

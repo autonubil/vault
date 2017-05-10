@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/hashicorp/vault/vault"
+	"github.com/autonubil/vault/vault"
 )
 
 func TestSysRotate(t *testing.T) {

@@ -3,8 +3,8 @@ package ssh
 import (
 	"fmt"
 
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 const SecretOTPType = "secret_otp_type"
@@ -33,6 +33,8 @@ func (b *backend) secretOTPRevoke(req *logical.Request, d *framework.FieldData) 
 		return nil, fmt.Errorf("secret is missing internal data")
 	}
 
+	b.saltMutex.RLock()
+	defer b.saltMutex.RUnlock()
 	err := req.Storage.Delete("otp/" + b.salt.SaltID(otp))
 	if err != nil {
 		return nil, err

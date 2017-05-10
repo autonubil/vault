@@ -5,8 +5,8 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 	"github.com/fatih/structs"
 )
 

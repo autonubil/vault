@@ -3,7 +3,7 @@ package framework
 import (
 	"testing"
 
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/logical"
 )
 
 func TestPathStruct(t *testing.T) {

@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/vault/helper/policyutil"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/helper/policyutil"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 func pathListCerts(b *backend) *framework.Path {
@@ -37,6 +37,12 @@ func pathCerts(b *backend) *framework.Path {
 				Type: framework.TypeString,
 				Description: `The public certificate that should be trusted.
 Must be x509 PEM encoded.`,
+			},
+
+			"allowed_names": &framework.FieldSchema{
+				Type: framework.TypeCommaStringSlice,
+				Description: `A comma-separated list of names.
+At least one must exist in either the Common Name or SANs. Supports globbing.`,
 			},
 
 			"display_name": &framework.FieldSchema{
@@ -139,6 +145,7 @@ func (b *backend) pathCertWrite(
 	certificate := d.Get("certificate").(string)
 	displayName := d.Get("display_name").(string)
 	policies := policyutil.ParsePolicies(d.Get("policies").(string))
+	allowedNames := d.Get("allowed_names").([]string)
 
 	// Default the display name to the certificate name if not given
 	if displayName == "" {
@@ -165,10 +172,11 @@ func (b *backend) pathCertWrite(
 	}
 
 	certEntry := &CertEntry{
-		Name:        name,
-		Certificate: certificate,
-		DisplayName: displayName,
-		Policies:    policies,
+		Name:         name,
+		Certificate:  certificate,
+		DisplayName:  displayName,
+		Policies:     policies,
+		AllowedNames: allowedNames,
 	}
 
 	// Parse the lease duration or default to backend/system default
@@ -196,11 +204,12 @@ func (b *backend) pathCertWrite(
 }
 
 type CertEntry struct {
-	Name        string
-	Certificate string
-	DisplayName string
-	Policies    []string
-	TTL         time.Duration
+	Name         string
+	Certificate  string
+	DisplayName  string
+	Policies     []string
+	TTL          time.Duration
+	AllowedNames []string
 }
 
 const pathCertHelpSyn = `

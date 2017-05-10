@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/hashicorp/vault/vault"
+	"github.com/autonubil/vault/vault"
 )
 
 func handleSysGenerateRootAttempt(core *vault.Core) http.Handler {
@@ -120,7 +120,7 @@ func handleSysGenerateRootUpdate(core *vault.Core) http.Handler {
 		if req.Key == "" {
 			respondError(
 				w, http.StatusBadRequest,
-				errors.New("'key' must specified in request body as JSON"))
+				errors.New("'key' must be specified in request body as JSON"))
 			return
 		}
 

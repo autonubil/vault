@@ -3,7 +3,9 @@
 // includes helpers for converting a certificate/private key bundle
 // between DER and PEM, printing certificate serial numbers, and more.
 //
-// Functionality specific to the PKI backend includes some types // and helper methods to make requesting certificates from the // backend easy.
+// Functionality specific to the PKI backend includes some types
+// and helper methods to make requesting certificates from the
+// backend easy.
 package certutil
 
 import (
@@ -18,7 +20,7 @@ import (
 	"math/big"
 	"strings"
 
-	"github.com/hashicorp/vault/helper/errutil"
+	"github.com/autonubil/vault/helper/errutil"
 )
 
 // Secret is used to attempt to unmarshal a Vault secret
@@ -442,7 +444,7 @@ func (c *CSRBundle) ToParsedCSRBundle() (*ParsedCSRBundle, error) {
 		result.CSRBytes = pemBlock.Bytes
 		result.CSR, err = x509.ParseCertificateRequest(result.CSRBytes)
 		if err != nil {
-			return nil, errutil.UserError{"Error encountered parsing certificate bytes from raw bundle"}
+			return nil, errutil.UserError{fmt.Sprintf("Error encountered parsing certificate bytes from raw bundle: %v", err)}
 		}
 	}
 
@@ -583,6 +585,7 @@ func (p *ParsedCertBundle) GetTLSConfig(usage TLSUsage) (*tls.Config, error) {
 type IssueData struct {
 	TTL        string `json:"ttl" structs:"ttl" mapstructure:"ttl"`
 	CommonName string `json:"common_name" structs:"common_name" mapstructure:"common_name"`
+	OU         string `json:"ou" structs:"ou" mapstructure:"ou"`
 	AltNames   string `json:"alt_names" structs:"alt_names" mapstructure:"alt_names"`
 	IPSANs     string `json:"ip_sans" structs:"ip_sans" mapstructure:"ip_sans"`
 	CSR        string `json:"csr" structs:"csr" mapstructure:"csr"`

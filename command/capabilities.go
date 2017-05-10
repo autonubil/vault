@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/vault/meta"
+	"github.com/autonubil/vault/meta"
 )
 
 // CapabilitiesCommand is a Command that enables a new endpoint.

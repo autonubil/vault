@@ -8,7 +8,7 @@ import (
 	log "github.com/mgutz/logxi/v1"
 
 	"github.com/hashicorp/go-uuid"
-	"github.com/hashicorp/vault/helper/logformat"
+	"github.com/autonubil/vault/helper/logformat"
 )
 
 // mockRollback returns a mock rollback manager

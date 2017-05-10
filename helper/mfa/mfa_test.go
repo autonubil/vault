@@ -3,9 +3,9 @@ package mfa
 import (
 	"testing"
 
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
-	logicaltest "github.com/hashicorp/vault/logical/testing"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
+	logicaltest "github.com/autonubil/vault/logical/testing"
 )
 
 // MakeTestBackend creates a simple MFA enabled backend.

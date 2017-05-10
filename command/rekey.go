@@ -6,10 +6,10 @@ import (
 	"strings"
 
 	"github.com/fatih/structs"
-	"github.com/hashicorp/vault/api"
-	"github.com/hashicorp/vault/helper/password"
-	"github.com/hashicorp/vault/helper/pgpkeys"
-	"github.com/hashicorp/vault/meta"
+	"github.com/autonubil/vault/api"
+	"github.com/autonubil/vault/helper/password"
+	"github.com/autonubil/vault/helper/pgpkeys"
+	"github.com/autonubil/vault/meta"
 )
 
 // RekeyCommand is a Command that rekeys the vault.
@@ -194,11 +194,11 @@ func (c *RekeyCommand) Run(args []string) int {
 	c.Ui.Output(fmt.Sprintf(
 		"\n"+
 			"Vault rekeyed with %d keys and a key threshold of %d. Please\n"+
-			"securely distribute the above keys. When the Vault is re-sealed,\n"+
+			"securely distribute the above keys. When the vault is re-sealed,\n"+
 			"restarted, or stopped, you must provide at least %d of these keys\n"+
 			"to unseal it again.\n\n"+
 			"Vault does not store the master key. Without at least %d keys,\n"+
-			"your Vault will remain permanently sealed.",
+			"your vault will remain permanently sealed.",
 		shares,
 		threshold,
 		threshold,
@@ -361,7 +361,7 @@ Usage: vault rekey [options] [key]
   a new set of unseal keys or to change the number of shares and the
   required threshold.
 
-  Rekey can only be done when the Vault is already unsealed. The operation
+  Rekey can only be done when the vault is already unsealed. The operation
   is done online, but requires that a threshold of the current unseal
   keys be provided.
 

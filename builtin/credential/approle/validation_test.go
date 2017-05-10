@@ -3,7 +3,7 @@ package approle
 import (
 	"testing"
 
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/logical"
 )
 
 func TestAppRole_SecretIDNumUsesUpgrade(t *testing.T) {

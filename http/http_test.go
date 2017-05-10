@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/go-cleanhttp"
-	"github.com/hashicorp/vault/helper/jsonutil"
+	"github.com/autonubil/vault/helper/jsonutil"
 )
 
 func testHttpGet(t *testing.T, token string, addr string) *http.Response {

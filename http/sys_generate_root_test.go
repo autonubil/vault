@@ -10,9 +10,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/go-uuid"
-	"github.com/hashicorp/vault/helper/pgpkeys"
-	"github.com/hashicorp/vault/helper/xor"
-	"github.com/hashicorp/vault/vault"
+	"github.com/autonubil/vault/helper/pgpkeys"
+	"github.com/autonubil/vault/helper/xor"
+	"github.com/autonubil/vault/vault"
 )
 
 func TestSysGenerateRootAttempt_Status(t *testing.T) {
@@ -312,6 +312,7 @@ func TestSysGenerateRoot_Update_OTP(t *testing.T) {
 		"ttl":              json.Number("0"),
 		"path":             "auth/token/root",
 		"explicit_max_ttl": json.Number("0"),
+		"expire_time":      nil,
 	}
 
 	resp = testHttpGet(t, newRootToken, addr+"/v1/auth/token/lookup-self")
@@ -401,6 +402,7 @@ func TestSysGenerateRoot_Update_PGP(t *testing.T) {
 		"ttl":              json.Number("0"),
 		"path":             "auth/token/root",
 		"explicit_max_ttl": json.Number("0"),
+		"expire_time":      nil,
 	}
 
 	resp = testHttpGet(t, newRootToken, addr+"/v1/auth/token/lookup-self")

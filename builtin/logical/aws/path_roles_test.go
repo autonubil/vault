@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/logical"
 )
 
 func TestBackend_PathListRoles(t *testing.T) {

@@ -3,7 +3,7 @@ package framework
 import (
 	"time"
 
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/logical"
 )
 
 // Secret is a type of secret that can be returned from a backend.

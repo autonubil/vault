@@ -6,8 +6,8 @@ import (
 	"sync"
 
 	"github.com/gocql/gocql"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 // Factory creates a new backend
@@ -29,6 +29,12 @@ func Backend() *backend {
 
 		Secrets: []*framework.Secret{
 			secretCreds(&b),
+		},
+
+		Invalidate: b.invalidate,
+
+		Clean: func() {
+			b.ResetDB(nil)
 		},
 	}
 
@@ -101,6 +107,13 @@ func (b *backend) ResetDB(newSession *gocql.Session) {
 	}
 
 	b.session = newSession
+}
+
+func (b *backend) invalidate(key string) {
+	switch key {
+	case "config/connection":
+		b.ResetDB(nil)
+	}
 }
 
 const backendHelp = `

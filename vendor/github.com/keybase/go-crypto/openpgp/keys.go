@@ -283,7 +283,9 @@ func (el EntityList) KeysByIdUsage(id uint64, fp []byte, requiredUsage byte) (ke
 				usage |= packet.KeyFlagEncryptCommunications
 				usage |= packet.KeyFlagEncryptStorage
 
-			case key.PublicKey.PubKeyAlgo == packet.PubKeyAlgoDSA:
+			case key.PublicKey.PubKeyAlgo == packet.PubKeyAlgoDSA ||
+				key.PublicKey.PubKeyAlgo == packet.PubKeyAlgoECDSA ||
+				key.PublicKey.PubKeyAlgo == packet.PubKeyAlgoEdDSA:
 				usage |= packet.KeyFlagSign
 
 			// For a primary RSA key without any key flags, be as permissiable
@@ -598,8 +600,9 @@ func addSubkey(e *Entity, packets *packet.Reader, pub *packet.PublicKey, priv *p
 		}
 		switch sig.SigType {
 		case packet.SigTypeSubkeyBinding:
-			// First writer wins
-			if subKey.Sig == nil {
+			// Does the "new" sig set expiration to later date than
+			// "previous" sig?
+			if subKey.Sig == nil || subKey.Sig.ExpiresBeforeOther(sig) {
 				subKey.Sig = sig
 			}
 		case packet.SigTypeSubkeyRevocation:

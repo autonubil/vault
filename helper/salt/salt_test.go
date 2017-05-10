@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/go-uuid"
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/logical"
 )
 
 func TestSalt(t *testing.T) {

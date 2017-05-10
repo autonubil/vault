@@ -3,8 +3,8 @@ package transit
 import (
 	"fmt"
 
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 func (b *backend) pathConfig() *framework.Path {

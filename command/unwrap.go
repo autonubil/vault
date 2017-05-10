@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/vault/api"
-	"github.com/hashicorp/vault/meta"
+	"github.com/autonubil/vault/api"
+	"github.com/autonubil/vault/meta"
 )
 
 // UnwrapCommand is a Command that behaves like ReadCommand but specifically
@@ -37,7 +37,7 @@ func (c *UnwrapCommand) Run(args []string) int {
 	case 1:
 		tokenID = args[0]
 	default:
-		c.Ui.Error("Unwrap expects zero or one argument (the ID of the wrapping token)")
+		c.Ui.Error("unwrap expects zero or one argument (the ID of the wrapping token)")
 		flags.Usage()
 		return 1
 	}

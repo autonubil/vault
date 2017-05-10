@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/vault/helper/logformat"
+	"github.com/autonubil/vault/helper/logformat"
 	log "github.com/mgutz/logxi/v1"
 
 	"github.com/coreos/etcd/client"

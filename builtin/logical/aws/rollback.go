@@ -3,8 +3,8 @@ package aws
 import (
 	"fmt"
 
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 var walRollbackMap = map[string]framework.WALRollbackFunc{

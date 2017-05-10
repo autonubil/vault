@@ -5,8 +5,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/hashicorp/vault/helper/salt"
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/helper/salt"
+	"github.com/autonubil/vault/logical"
 )
 
 // PathMap can be used to generate a path that stores mappings in the
@@ -21,6 +21,7 @@ type PathMap struct {
 	Schema        map[string]*FieldSchema
 	CaseSensitive bool
 	Salt          *salt.Salt
+	SaltMutex     *sync.RWMutex
 
 	once sync.Once
 }
@@ -51,7 +52,9 @@ func (p *PathMap) pathStruct(k string) *PathStruct {
 
 	// If we have a salt, apply it before lookup
 	if p.Salt != nil {
+		p.SaltMutex.RLock()
 		k = p.Salt.SaltID(k)
+		p.SaltMutex.RUnlock()
 	}
 
 	return &PathStruct{

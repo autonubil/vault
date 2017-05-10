@@ -3,7 +3,7 @@ package logical
 import (
 	"sync"
 
-	"github.com/hashicorp/vault/physical"
+	"github.com/autonubil/vault/physical"
 )
 
 // InmemStorage implements Storage and stores all data in memory.

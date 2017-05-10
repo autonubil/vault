@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/fatih/structs"
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 	_ "github.com/lib/pq"
 )
 

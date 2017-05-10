@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/hashicorp/errwrap"
-	"github.com/hashicorp/vault/vault"
+	"github.com/autonubil/vault/vault"
 )
 
 func handleSysInit(core *vault.Core) http.Handler {

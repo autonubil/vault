@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 func pathLogin(b *backend) *framework.Path {
@@ -39,7 +39,8 @@ func (b *backend) pathLoginUpdate(req *logical.Request, data *framework.FieldDat
 	}
 
 	auth := &logical.Auth{
-		Period: role.Period,
+		NumUses: role.TokenNumUses,
+		Period:  role.Period,
 		InternalData: map[string]interface{}{
 			"role_name": roleName,
 		},

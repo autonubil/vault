@@ -3,7 +3,7 @@ package command
 import (
 	"testing"
 
-	"github.com/hashicorp/vault/api"
+	"github.com/autonubil/vault/api"
 )
 
 func testClient(t *testing.T, addr string, token string) *api.Client {

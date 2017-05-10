@@ -7,16 +7,8 @@ import (
 	"time"
 
 	"github.com/hashicorp/go-uuid"
-	"github.com/hashicorp/vault/logical"
+	"github.com/autonubil/vault/logical"
 )
-
-func TestCubbyholeBackend_RootPaths(t *testing.T) {
-	b := testCubbyholeBackend()
-	root := b.SpecialPaths()
-	if root != nil {
-		t.Fatalf("unexpected: %v", root)
-	}
-}
 
 func TestCubbyholeBackend_Write(t *testing.T) {
 	b := testCubbyholeBackend()

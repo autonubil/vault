@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/vault/api"
-	"github.com/hashicorp/vault/meta"
+	"github.com/autonubil/vault/api"
+	"github.com/autonubil/vault/meta"
 )
 
 // MountTuneCommand is a Command that remounts a mounted secret backend
@@ -28,7 +28,7 @@ func (c *MountTuneCommand) Run(args []string) int {
 	if len(args) != 1 {
 		flags.Usage()
 		c.Ui.Error(fmt.Sprintf(
-			"\n'mount-tune' expects one arguments: the mount path"))
+			"\nmount-tune expects one arguments: the mount path"))
 		return 1
 	}
 

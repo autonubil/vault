@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/hashicorp/vault/vault"
-	"github.com/hashicorp/vault/version"
+	"github.com/autonubil/vault/vault"
+	"github.com/autonubil/vault/version"
 )
 
 func handleSysHealth(core *vault.Core) http.Handler {

@@ -3,8 +3,8 @@ package mongodb
 import (
 	"encoding/json"
 
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 func pathListRoles(b *backend) *framework.Path {

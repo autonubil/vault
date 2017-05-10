@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/vault"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/vault"
 )
 
 func TestSysSealStatus(t *testing.T) {

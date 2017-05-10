@@ -8,8 +8,8 @@ import (
 
 	log "github.com/mgutz/logxi/v1"
 
-	"github.com/hashicorp/vault/logical"
-	"github.com/hashicorp/vault/logical/framework"
+	"github.com/autonubil/vault/logical"
+	"github.com/autonubil/vault/logical/framework"
 )
 
 func Factory(conf *logical.BackendConfig) (logical.Backend, error) {
@@ -34,6 +34,8 @@ func Backend(conf *logical.BackendConfig) *backend {
 		},
 
 		Clean: b.ResetDB,
+
+		Invalidate: b.invalidate,
 	}
 
 	b.logger = conf.Logger
@@ -124,6 +126,13 @@ func (b *backend) ResetDB() {
 	}
 
 	b.db = nil
+}
+
+func (b *backend) invalidate(key string) {
+	switch key {
+	case "config/connection":
+		b.ResetDB()
+	}
 }
 
 // Lease returns the lease information

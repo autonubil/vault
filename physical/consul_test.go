@@ -12,8 +12,8 @@ import (
 	log "github.com/mgutz/logxi/v1"
 
 	"github.com/hashicorp/consul/api"
-	"github.com/hashicorp/vault/helper/logformat"
-	"github.com/hashicorp/vault/helper/strutil"
+	"github.com/autonubil/vault/helper/logformat"
+	"github.com/autonubil/vault/helper/strutil"
 	dockertest "gopkg.in/ory-am/dockertest.v2"
 )
 

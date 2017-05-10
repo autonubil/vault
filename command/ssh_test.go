@@ -8,10 +8,10 @@ import (
 	"strings"
 	"testing"
 
-	logicalssh "github.com/hashicorp/vault/builtin/logical/ssh"
-	"github.com/hashicorp/vault/http"
-	"github.com/hashicorp/vault/meta"
-	"github.com/hashicorp/vault/vault"
+	logicalssh "github.com/autonubil/vault/builtin/logical/ssh"
+	"github.com/autonubil/vault/http"
+	"github.com/autonubil/vault/meta"
+	"github.com/autonubil/vault/vault"
 	"github.com/mitchellh/cli"
 )
 

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/vault/api"
-	"github.com/hashicorp/vault/meta"
+	"github.com/autonubil/vault/api"
+	"github.com/autonubil/vault/meta"
 )
 
 // StatusCommand is a Command that outputs the status of whether
@@ -40,7 +40,7 @@ func (c *StatusCommand) Run(args []string) int {
 			"Key Shares: %d\n"+
 			"Key Threshold: %d\n"+
 			"Unseal Progress: %d\n"+
-			"Unseal Nonce: %v"+
+			"Unseal Nonce: %v\n"+
 			"Version: %s",
 		sealStatus.Sealed,
 		sealStatus.N,
